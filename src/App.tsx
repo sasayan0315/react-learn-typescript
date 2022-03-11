@@ -8,6 +8,7 @@ import { User } from "./types/api/user";
 import { Text } from "./Text";
 import { UserCard } from "./components/UserCard";
 import { userProfile } from "./types/userProfile";
+import { useAllUsers } from "./hooks/useAllUsers";
 
 export default function App() {
   const [todos, setTodos] = useState<Array<TodoType>>([]);
@@ -20,32 +21,38 @@ export default function App() {
       });
   };
 
-  const [userProfiles, setUserProfiles] = useState<Array<userProfile>>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
+  const { userProfiles, isLoading, isError, getUsers } = useAllUsers();
 
   const onClickFetchUserData = () => {
-    setIsLoading(true);
-    axios
-      .get<Array<User>>("https://jsonplaceholder.typicode.com/users/")
-      .then((res) => {
-        const data: Array<userProfile> = res.data.map((data) => ({
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          address: `${data.address.city}${data.address.street}`
-        }));
-
-        setUserProfiles(data);
-        setIsError(false);
-      })
-      .catch(() => {
-        setIsError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    getUsers();
   };
+
+  // const [userProfiles, setUserProfiles] = useState<Array<userProfile>>([]);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isError, setIsError] = useState<boolean>(false);
+
+  // const onClickFetchUserData = () => {
+  //   setIsLoading(true);
+  //   axios
+  //     .get<Array<User>>("https://jsonplaceholder.typicode.com/users/")
+  //     .then((res) => {
+  //       const data: Array<userProfile> = res.data.map((data) => ({
+  //         id: data.id,
+  //         name: data.name,
+  //         email: data.email,
+  //         address: `${data.address.city}${data.address.street}`
+  //       }));
+
+  //       setUserProfiles(data);
+  //       setIsError(false);
+  //     })
+  //     .catch(() => {
+  //       setIsError(true);
+  //     })
+  //     .finally(() => {
+  //       setIsLoading(false);
+  //     });
+  // };
 
   return (
     <div className="App">
